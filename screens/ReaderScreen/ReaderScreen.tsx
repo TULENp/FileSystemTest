@@ -5,34 +5,38 @@ import { useRoute } from '@react-navigation/native';
 
 
 export function ReaderScreen() {
-    const { content } = useRoute().params;
-    const pageChars: number = 500;
-    const [pageText, setPageText] = useState('');
-    const [currentPage, setCurrentPage] = useState(0);
-    const bookPages = content.length / pageChars;
+    const { content } = useRoute().params; // get book text from params
+    const pageChars: number = 600; // number of chars in one page 
+    const [pageText, setPageText] = useState(''); // text on one page
+    const [currentPage, setCurrentPage] = useState(1);
+    const bookPages = Math.ceil(content.length / pageChars); // number of pages in book
 
     useEffect(() => {
         ReadCurrentPage();
-        console.log(bookPages);
-        
     }, [currentPage])
 
     function ReadCurrentPage() {
-        const readChar = currentPage * pageChars;
-        let text = '';
-        for (let index = readChar; index < readChar + pageChars && index < content.length; index++) {
-            text += content[index];
+        if (content) {
+            const readChar = (currentPage - 1) * pageChars;
+            let text = '';
+            for (let index = readChar; index < readChar + pageChars && index < content.length; index++) {
+                text += content[index];
+            }
+            setPageText(text + '\n');
         }
-
-        setPageText(text);
+        else {
+            setPageText('Книга не найдена');
+        }
     }
 
     function toNextPage() {
-        setCurrentPage(currentPage + 1);
+        if (currentPage < bookPages) {
+            setCurrentPage(currentPage + 1);
+        }
     }
 
     function toPrevPage() {
-        if (currentPage !== 0) {
+        if (currentPage > 1) {
             setCurrentPage(currentPage - 1);
         }
     }
@@ -47,6 +51,7 @@ export function ReaderScreen() {
                 <TouchableOpacity onPress={toPrevPage} style={styles.button}>
                     <Text style={styles.buttonText}>{'<'}</Text>
                 </TouchableOpacity>
+                <Text style={[styles.buttonText, { color: 'black' }]}>{currentPage}</Text>
                 <TouchableOpacity onPress={toNextPage} style={styles.button}>
                     <Text style={styles.buttonText}>{'>'}</Text>
                 </TouchableOpacity>
