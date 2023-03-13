@@ -17,7 +17,6 @@ export function ReaderScreen() {
 
     function ReadCurrentPage() {
         if (content) {
-
             const pageFirstCharNum: number = (currentPage - 1) * pageChars; // number of the first char of current page
             const nextPageFirstCharNum: number = pageFirstCharNum + pageChars; // number of the last char of current page
             let text: string = '';
