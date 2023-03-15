@@ -9,8 +9,18 @@ import { StorageAccessFramework } from 'expo-file-system';
 export function BookScreen({ navigation }: any) {
 
     let filePath = FileSystem.documentDirectory + 'example.txt';
+    let booksPath = FileSystem.documentDirectory + '/files/' + 'prest.txt';
     let content = bookFile.text;
 
+    async function GetFiles() {
+        const files = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory + '/files/');
+        console.log(files);
+        alert(files);
+    }
+
+    
+
+    //? may not be needed
     const requestReadExternalStoragePermission = async () => {
         try {
             const granted = await PermissionsAndroid.request(
@@ -26,6 +36,7 @@ export function BookScreen({ navigation }: any) {
         }
     };
 
+    //? may not be needed
     async function makeFile() {
         try {
             //create a file at filePath. Write the content data to it
@@ -38,36 +49,29 @@ export function BookScreen({ navigation }: any) {
     };
 
     async function readText(path: string) {
-        // await FileSystem.readAsStringAsync(path)
-        //     .then(text => navigation.navigate('Reader', { content: text }));
         await FileSystem.StorageAccessFramework.readAsStringAsync(path)
             .then(text => navigation.navigate('Reader', { content: text }));
     }
-    
 
     async function AddFromFile() {
         const res = await DocumentPicker.getDocumentAsync({ copyToCacheDirectory: false, type: 'text/*' });
-        if (res.type === "success") {
-            // await FileSystem.copyAsync({ from: res.uri, to: FileSystem.documentDirectory });
-            // console.log(FileSystem.documentDirectory + res.name);
-            
-            readText(res.uri);
-            
+        if (res.type === "success" && FileSystem.documentDirectory) {
+            //copy file to app's dir/files
+            await FileSystem.StorageAccessFramework.copyAsync({ from: res.uri, to: FileSystem.documentDirectory+'/files' });
+            const path = FileSystem.documentDirectory + res.name;
+            readText(path);
         }
     }
-
-    
 
 
     return (
         <View >
             <View style={styles.tools}>
-
                 <Button title='Make file' onPress={makeFile} />
                 <Button title='Give storage permission' onPress={requestReadExternalStoragePermission} />
-                <Button title='read text' onPress={() => readText(filePath)} />
+                <Button title='read text' onPress={() => readText(booksPath)} />
                 <Button title='Add book from file' onPress={AddFromFile} />
-
+                <Button title='Show files' onPress={GetFiles} />
             </View>
         </View>
     )
