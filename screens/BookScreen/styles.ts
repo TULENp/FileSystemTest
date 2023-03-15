@@ -3,7 +3,9 @@ import { StyleSheet } from 'react-native'
 export const styles = StyleSheet.create({
     tools: {
         display: 'flex',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
+        backgroundColor: '#363636',
+        height:'100%'
     },
     button: {
         backgroundColor: '#5035FF',
@@ -13,7 +15,7 @@ export const styles = StyleSheet.create({
         width: 100,
     },
     buttonText: {
-        fontSize: 45,
+        fontSize: 4,
         color: '#FFFFFF',
     },
 })

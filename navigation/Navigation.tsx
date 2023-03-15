@@ -8,8 +8,13 @@ const Stack = createNativeStackNavigator();
 
 export function Navigation() {
     return (
-        <NavigationContainer >
-            <Stack.Navigator initialRouteName='Main'>
+        <NavigationContainer>
+            <Stack.Navigator initialRouteName='Main'
+                screenOptions={
+                    {
+                        headerStyle: { backgroundColor: '#3636f3' },
+                        headerTitleStyle: { color: 'white' }
+                    }}>
                 <Stack.Screen name="Main" component={BookScreen} options={{ title: 'Book' }} />
                 <Stack.Screen name="Reader" component={ReaderScreen} />
             </Stack.Navigator>
