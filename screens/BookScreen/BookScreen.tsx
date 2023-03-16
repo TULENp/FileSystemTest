@@ -1,4 +1,4 @@
-import { View, Text, Button, PermissionsAndroid } from 'react-native'
+import { View, Text, Button, PermissionsAndroid, FlatList, Pressable } from 'react-native'
 import * as FileSystem from 'expo-file-system';
 import React, { useEffect, useState } from 'react';
 import { bookFile } from '../../assets/bookFile';
@@ -8,17 +8,23 @@ import { StorageAccessFramework } from 'expo-file-system';
 
 export function BookScreen({ navigation }: any) {
 
-    let filePath = FileSystem.documentDirectory + 'example.txt';
-    let booksPath = FileSystem.documentDirectory + '/files/' + 'prest.txt';
+    // type TBooks = {
+    //     title: string,
+
+    // }
+    const [books, setBooks] = useState<string[]>([]);
+    let booksDirPath = FileSystem.documentDirectory + 'books/';
+    let filePath = booksDirPath + 'prest.txt';
     let content = bookFile.text;
 
-    async function GetFiles() {
-        const files = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory + '/files/');
-        console.log(files);
-        alert(files);
-    }
+    useEffect(() => {
+        GetFiles();
+    }, [])
 
-    
+    async function GetFiles() {
+        const books = await FileSystem.readDirectoryAsync(booksDirPath);
+        setBooks(books);
+    }
 
     //? may not be needed
     const requestReadExternalStoragePermission = async () => {
@@ -56,20 +62,34 @@ export function BookScreen({ navigation }: any) {
     async function AddFromFile() {
         const res = await DocumentPicker.getDocumentAsync({ copyToCacheDirectory: false, type: 'text/*' });
         if (res.type === "success" && FileSystem.documentDirectory) {
-            //copy file to app's dir/files
-            await FileSystem.StorageAccessFramework.copyAsync({ from: res.uri, to: FileSystem.documentDirectory+'/files' });
-            const path = FileSystem.documentDirectory + res.name;
-            readText(path);
+            //* copy file to app's dir/books
+            await FileSystem.StorageAccessFramework.copyAsync(
+                {
+                    from: res.uri,
+                    to: booksDirPath
+                });
         }
     }
 
+    function Item({ book }: { book: string }) {
+        const path = booksDirPath + book;
+        return (
+            <Pressable style={styles.bookCard} onPress={() => readText(path)}>
+                <Text style={styles.buttonText}>{book}</Text>
+                <Button title='remove' onPress={() => FileSystem.deleteAsync(path)} />
+            </Pressable>
+        )
+    }
 
     return (
         <View >
             <View style={styles.tools}>
-                <Button title='Make file' onPress={makeFile} />
-                <Button title='Give storage permission' onPress={requestReadExternalStoragePermission} />
-                <Button title='read text' onPress={() => readText(booksPath)} />
+                <FlatList
+                    data={books}
+                    renderItem={({ item }) => <Item book={item} />} />
+
+                {/* <Button title='Make file' onPress={makeFile} />
+                <Button title='Give storage permission' onPress={requestReadExternalStoragePermission} /> */}
                 <Button title='Add book from file' onPress={AddFromFile} />
                 <Button title='Show files' onPress={GetFiles} />
             </View>

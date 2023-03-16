@@ -12,10 +12,10 @@ export function Navigation() {
             <Stack.Navigator initialRouteName='Main'
                 screenOptions={
                     {
-                        headerStyle: { backgroundColor: '#3636f3' },
+                        headerStyle: { backgroundColor: '#4781c8' },
                         headerTitleStyle: { color: 'white' }
                     }}>
-                <Stack.Screen name="Main" component={BookScreen} options={{ title: 'Book' }} />
+                <Stack.Screen name="Main" component={BookScreen} options={{ title: 'Books' }} />
                 <Stack.Screen name="Reader" component={ReaderScreen} />
             </Stack.Navigator>
         </NavigationContainer>

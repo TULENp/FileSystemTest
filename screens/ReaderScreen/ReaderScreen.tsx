@@ -30,7 +30,7 @@ export function ReaderScreen() {
                 index++; // to avoid space
             }
 
-            
+
             // read the whole page
             while (index < nextPageFirstCharNum && index < content.length) {
                 text += content[index];
