@@ -4,10 +4,11 @@ import React, { useEffect, useState } from 'react';
 import { bookFile } from '../../assets/bookFile';
 import { styles } from './styles';
 import * as DocumentPicker from 'expo-document-picker';
-import { StorageAccessFramework } from 'expo-file-system';
+// import { StorageAccessFramework } from 'expo-file-system';
 
 export function BookScreen({ navigation }: any) {
 
+    //TODO get info about file
     // type TBooks = {
     //     title: string,
 
@@ -32,11 +33,6 @@ export function BookScreen({ navigation }: any) {
             const granted = await PermissionsAndroid.request(
                 PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
             );
-            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                console.log('Access granted');
-            } else {
-                console.log('Access denied');
-            }
         } catch (err) {
             console.warn(err);
         }
@@ -71,12 +67,21 @@ export function BookScreen({ navigation }: any) {
         }
     }
 
+    async function getInfo(path: string) {
+        const file = await FileSystem.getInfoAsync(path);
+        if (file.exists) {
+            alert(JSON.stringify(file));
+        }
+    }
+
     function Item({ book }: { book: string }) {
         const path = booksDirPath + book;
         return (
             <Pressable style={styles.bookCard} onPress={() => readText(path)}>
                 <Text style={styles.buttonText}>{book}</Text>
                 <Button title='remove' onPress={() => FileSystem.deleteAsync(path)} />
+                <Button title='info' onPress={() => getInfo(path)} />
+
             </Pressable>
         )
     }

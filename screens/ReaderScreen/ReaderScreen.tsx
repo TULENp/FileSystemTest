@@ -75,7 +75,7 @@ export function ReaderScreen() {
                 <TouchableOpacity onPress={toPrevPage} style={styles.button}>
                     <Text style={styles.buttonText}>{'<'}</Text>
                 </TouchableOpacity>
-                <Text style={[styles.buttonText, { color: 'black' }]}>{currentPage}</Text>
+                <Text style={[styles.buttonText, { color: 'black' }]}>{currentPage}/{bookPages}</Text>
                 <TouchableOpacity onPress={toNextPage} style={styles.button}>
                     <Text style={styles.buttonText}>{'>'}</Text>
                 </TouchableOpacity>
