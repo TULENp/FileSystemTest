@@ -8,15 +8,8 @@ import * as DocumentPicker from 'expo-document-picker';
 
 export function BookScreen({ navigation }: any) {
 
-    //TODO get info about file
-    // type TBooks = {
-    //     title: string,
-
-    // }
     const [books, setBooks] = useState<string[]>([]);
-    let booksDirPath = FileSystem.documentDirectory + 'books/';
-    let filePath = booksDirPath + 'prest.txt';
-    let content = bookFile.text;
+    const booksDirPath = FileSystem.documentDirectory + 'books/';
 
     useEffect(() => {
         GetFiles();
@@ -40,6 +33,8 @@ export function BookScreen({ navigation }: any) {
 
     //? may not be needed
     async function makeFile() {
+        const filePath = booksDirPath + 'prest.txt';
+        const content = bookFile.text;
         try {
             //create a file at filePath. Write the content data to it
             await FileSystem.writeAsStringAsync(filePath, content);
@@ -52,11 +47,17 @@ export function BookScreen({ navigation }: any) {
 
     async function readText(path: string) {
         await FileSystem.StorageAccessFramework.readAsStringAsync(path)
+            .then(text => readFB2(text))
             .then(text => navigation.navigate('Reader', { content: text }));
     }
 
+    function readFB2(text: string) {
+        const regex = /<[^>]+>/g;
+        return text.replace(regex, '');
+    }
+
     async function AddFromFile() {
-        const res = await DocumentPicker.getDocumentAsync({ copyToCacheDirectory: false, type: 'text/*' });
+        const res = await DocumentPicker.getDocumentAsync({ copyToCacheDirectory: false });
         if (res.type === "success" && FileSystem.documentDirectory) {
             //* copy file to app's dir/books
             await FileSystem.StorageAccessFramework.copyAsync(
